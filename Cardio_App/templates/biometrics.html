@@ -1,0 +1,584 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/assets/css/main.css" />
+    <title>Cardiovascular Risk Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            justify-content: center;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            background-color: #4acaa8;
+            max-width: 600px;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 15px;
+            position: relative;
+            left: -70px;
+            top: 20px;
+        }
+        label, input {
+            width: 48%;
+        }
+        .inline-group {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+        .inline-group label, .inline-group input {
+            width: 48%;
+        }
+        label {
+            font-weight: bold;
+            color: white;
+            text-align: left;
+        }
+        input[type="number"], input[type="submit"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        input[type="submit"] {
+            width: 100%;
+            background-color: #3aa58b;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+        }
+        input[type="submit"]:hover {
+            background-color: #3aa58b;
+            color: white;
+        }
+        h2 {
+            margin-top: 20px;
+            color: #4acaa8;
+            text-align: center;
+            width: max-content;
+            background-color: transparent;
+            font-size: 30px;
+            position: relative;
+            left: -20px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 400px;
+            text-align: center;
+            position: relative;
+        }
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .info-text {
+            font-size: 16px;
+            color: black;
+            text-align: left;
+        }
+        .read-more {
+            color: red;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 10px;
+            text-decoration: underline;
+        }
+           /* Apply a smaller font size to the entire form */
+    form {
+        font-size: 14px;
+        line-height: 1.5;
+        margin: 20px;
+    }
+
+    /* Flex container for form items */
+    .form-group {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    /* Style for the label (left side) */
+    label {
+        font-size: 12px;
+        margin-right: 15px;  /* Space between label and input box */
+        width: 150px;        /* Fix width for label */
+        text-align: right;   /* Align text to the right */
+    }
+
+    /* Style for the input fields (right side) */
+    input[type="number"] {
+        font-size: 14px;
+        padding: 8px;
+        width: 200px;  /* Fixed width for input boxes */
+        margin-bottom: 5px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+    }
+
+    /* Red border for invalid input */
+    input[type="number"].error-input {
+        border-color: red;
+    }
+
+    .error {
+        color: red;
+        font-size: 12px;
+        display: block;
+        margin-top: 5px;
+    }
+
+    .read-more {
+        color: #007bff;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+    /* Style for the modals */
+    .modal-content {
+        padding: 20px;
+    }
+
+    .modal-content h2 {
+        font-size: 16px;
+    }
+
+    .modal-content p {
+        font-size: 14px;
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+         <section id="header">
+            <header>
+                <span class="image avatar"><img src="static/images/heart.png" alt="" /></span>
+                <h1 id="logo"><a href="#">CardioPredict</a></h1>
+                <p>AI-driven care for a healthier heart<br />
+                Predicting tomorrow's health, today.</p>
+            </header>
+            <nav id="nav">
+                <ul>
+                    <li><a href="/" class="active">ECG</a></li>
+                    <li><a href="/">Features</a></li>
+                </ul>
+            </nav>
+            <footer>
+                <ul class="icons">
+                    <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+                    <li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+                    <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+                    <li><a href="#" class="icon brands fa-github"><span class="label">Github</span></a></li>
+                    <li><a href="#" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+                </ul>
+            </footer>
+        </section>
+
+        <h2>Fill form for Prediction</h2>
+        <form action="{{ url_for('biometrics') }}" method="POST" onsubmit="return validateForm()">
+    <div class="form-group">
+        <label for="age">Age (18-100):</label>
+        <input type="number" name="age" min="18" max="100" id="age" required>
+    </div>
+    <span id="age-error" class="error"></span>
+
+    <div class="form-group">
+        <label for="sex">Sex (1 for Male, 0 for Female):</label>
+        <input type="number" name="sex" min="0" max="1" id="sex" required>
+    </div>
+    <span id="sex-error" class="error"></span>
+
+    <div class="form-group">
+        <label for="chest_pain">Chest Pain Type (1-4): <span class="read-more" onclick="openModal('chestPainModal')">Important info</span></label>
+        <input type="number" name="chest_pain" min="1" max="4" id="chest_pain" required>
+    </div>
+    <span id="chest_pain-error" class="error"></span>
+
+    <div class="form-group">
+        <label for="resting_bp">Resting Blood Pressure (90-200): <span class="read-more" onclick="openModal('restingBPModal')">Important info</span></label>
+        <input type="number" name="resting_bp" min="90" max="200" id="resting_bp" required>
+    </div>
+    <span id="resting_bp-error" class="error"></span>
+
+    <div class="form-group">
+        <label for="cholesterol">Cholesterol (100-500): <span class="read-more" onclick="openModal('cholesterolModal')">Important info</span></label>
+        <input type="number" name="cholesterol" min="100" max="500" id="cholesterol" required>
+    </div>
+    <span id="cholesterol-error" class="error"></span>
+
+    <div class="form-group">
+        <label for="fasting_blood_sugar">Fasting Blood Sugar (0 or 1): <span class="read-more" onclick="openModal('fastingBloodSugarModal')">Important info</span></label>
+        <input type="number" name="fasting_blood_sugar" min="0" max="1" id="fasting_blood_sugar" required>
+    </div>
+    <span id="fasting_blood_sugar-error" class="error"></span>
+
+    <div class="form-group">
+        <label for="resting_ecg">Resting ECG (0 or 1): <span class="read-more" onclick="openModal('restingECGModal')">Important info</span></label>
+        <input type="number" name="resting_ecg" min="0" max="1" id="resting_ecg" required>
+    </div>
+    <span id="resting_ecg-error" class="error"></span>
+
+    <div class="form-group">
+        <label for="max_heart_rate">Max Heart Rate (60-220): <span class="read-more" onclick="openModal('maxHeartRateModal')">Important info</span></label>
+        <input type="number" name="max_heart_rate" min="60" max="220" id="max_heart_rate" required>
+    </div>
+    <span id="max_heart_rate-error" class="error"></span>
+
+    <div class="form-group">
+        <label for="exercise_angina">Exercise Angina (1 for Yes, 0 for No): <span class="read-more" onclick="openModal('exerciseAnginaModal')">Important info</span></label>
+        <input type="number" name="exercise_angina" min="0" max="1" id="exercise_angina" required>
+    </div>
+    <span id="exercise_angina-error" class="error"></span>
+
+    <div class="form-group">
+        <label for="oldpeak">Oldpeak (-2.0 to 6.0): <span class="read-more" onclick="openModal('oldpeakModal')">Important info</span></label>
+        <input type="number" name="oldpeak" min="-2.0" max="6.0" step="0.1" id="oldpeak" required>
+    </div>
+    <span id="oldpeak-error" class="error"></span>
+
+    <div class="form-group">
+        <label for="st_slope">ST Slope (1-3): <span class="read-more" onclick="openModal('stSlopeModal')">Important info</span></label>
+        <input type="number" name="st_slope" min="1" max="3" id="st_slope" required>
+    </div>
+    <span id="st_slope-error" class="error"></span>
+
+    <input type="submit" value="Predict">
+</form>
+
+{% if result %}
+<h2>Prediction Result: {{ result }}</h2>
+{% endif %}
+    </div>
+
+    <!-- Modals for each parameter with important information -->
+    <div id="chestPainModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('chestPainModal')">&times;</span>
+            <h2>Chest Pain Types</h2>
+            <p class="info-text">
+                Chest pain can be classified into four types:
+            </p>
+            <ul class="info-text">
+                <li><b>Type 1:</b> Typical angina, usually associated with physical activity</li>
+                <li><b>Type 2:</b> Atypical angina, not as related to physical stress</li>
+                <li><b>Type 3:</b> Non-anginal pain, not related to heart problems</li>
+                <li><b>Type 4:</b> Asymptomatic, no symptoms but still present</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="restingBPModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('restingBPModal')">&times;</span>
+            <h2>Resting Blood Pressure</h2>
+            <p class="info-text">
+                Resting blood pressure is a key indicator of cardiovascular health.
+            </p>
+            <ul class="info-text">
+                <li><b>Normal:</b> Below 120/80 mmHg</li>
+                <li><b>Elevated:</b> 120-129 systolic and less than 80 diastolic</li>
+                <li><b>High (Stage 1):</b> 130-139 systolic or 80-89 diastolic</li>
+                <li><b>High (Stage 2):</b> 140 or higher systolic or 90 or higher diastolic</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="cholesterolModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('cholesterolModal')">&times;</span>
+            <h2>Cholesterol Levels</h2>
+            <p class="info-text">
+                Cholesterol levels are important for heart health:
+            </p>
+            <ul class="info-text">
+                <li><b>Normal:</b> Less than 200 mg/dL</li>
+                <li><b>Borderline High:</b> 200-239 mg/dL</li>
+                <li><b>High:</b> 240 mg/dL or higher</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="fastingBloodSugarModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('fastingBloodSugarModal')">&times;</span>
+            <h2>Fasting Blood Sugar</h2>
+            <p class="info-text">
+                Fasting blood sugar levels are key for diagnosing diabetes:
+            </p>
+            <ul class="info-text">
+                <li><b>Normal:</b> Below 100 mg/dL</li>
+                <li><b>Prediabetes:</b> 100-125 mg/dL</li>
+                <li><b>Diabetes:</b> 126 mg/dL or higher</li>
+                <li><b>This is either 0 or 1</b>(1 indicating a fasting blood sugar greater than 120).</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="restingECGModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('restingECGModal')">&times;</span>
+            <h2>Resting ECG</h2>
+            <p class="info-text">
+                Resting electrocardiograms provide valuable insight into heart rhythm:
+            </p>
+            <ul class="info-text">
+                <li><b>Normal:</b> Normal heart rhythm</li>
+                <li><b>Abnormal:</b> Abnormal heart rhythm</li>
+            </ul>
+        </div>
+    </div>
+   <div id="maxHeartRateModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('maxHeartRateModal')">&times;</span>
+        <h2>Max Heart Rate</h2>
+        <p class="info-text">
+            Max heart rate refers to the highest heart rate a person can achieve during intense exercise. It's important for assessing cardiovascular health and physical fitness.
+        </p>
+        <ul class="info-text">
+            <li><b>Normal:</b> A higher max heart rate typically indicates better cardiovascular fitness.</li>
+            <li><b>Abnormal:</b> If the max heart rate is lower than expected for one's age, it may suggest cardiovascular problems.</li>
+        </ul>
+    </div>
+</div>
+
+<!-- Modal for Exercise Angina -->
+<div id="exerciseAnginaModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('exerciseAnginaModal')">&times;</span>
+        <h2>Exercise Angina</h2>
+        <p class="info-text">
+            Exercise angina is chest pain or discomfort that occurs during physical activity and is indicative of coronary artery disease.
+        </p>
+        <ul class="info-text">
+            <li><b>1 (Yes):</b> Indicates the person experiences chest pain during exercise, which may signal a potential heart issue.</li>
+            <li><b>0 (No):</b> The person does not experience chest pain during exercise, indicating no apparent issues.</li>
+        </ul>
+    </div>
+</div>
+
+<!-- Modal for Oldpeak -->
+<div id="oldpeakModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('oldpeakModal')">&times;</span>
+        <h2>Oldpeak</h2>
+        <p class="info-text">
+            Oldpeak is a measure of the depression in the ST segment of the electrocardiogram. It is often used to assess the severity of heart disease.
+        </p>
+        <ul class="info-text">
+            <li><b>Normal:</b> A lower oldpeak value (closer to 0) indicates no significant heart issues.</li>
+            <li><b>Abnormal:</b> Higher oldpeak values suggest possible heart problems, with more severe depression indicating more severe heart disease.</li>
+            <li><b> Range:</b>
+            <li>Normal: 0.0 (no ST depression)</li>
+
+             <li>Mild Depression: 0.1 - 1.0</li>
+
+              <li>Severe Depression: 1.1 - 6.0 (indicative of severe heart disease or ischemia)</li>
+        </ul>
+
+    </div>
+</div>
+
+<!-- Modal for ST Slope -->
+<div id="stSlopeModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('stSlopeModal')">&times;</span>
+        <h2>ST Slope</h2>
+        <p class="info-text">
+            The ST slope refers to the slope of the ST segment on an electrocardiogram, which can indicate the presence of heart disease.
+        </p>
+        <ul class="info-text">
+            <li><b>Normal:</b> An upward slope indicates no significant heart issues.</li>
+            <li><b>Abnormal:</b> A horizontal or downward slope can indicate the presence of heart disease or ischemia.</li>
+            <li><b> Range:</b>
+            <li>Normal (Upward Slope): 1</li>
+
+             <li>Abnormal (Horizontal or Downward Slope): 2 - 3</li>
+
+              <li>Range to Allow: 1 to 3</li>
+        </ul>
+
+
+
+
+
+    </div>
+</div>
+
+
+    <script>
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = "flex";
+        }
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = "none";
+        }
+
+
+    function validateForm() {
+        let isValid = true;
+
+        // Clear previous error messages
+        const errorMessages = document.querySelectorAll('.error');
+        errorMessages.forEach(function(error) {
+            error.textContent = '';
+        });
+
+        // Validate Age
+        const age = document.getElementById('age');
+        if (age.value < 18 || age.value > 100) {
+            document.getElementById('age-error').textContent = "Age must be between 18 and 100.";
+            age.style.borderColor = 'red';
+            isValid = false;
+        } else {
+            age.style.borderColor = '';
+        }
+
+        // Validate Sex
+        const sex = document.getElementById('sex');
+        if (sex.value < 0 || sex.value > 1) {
+            document.getElementById('sex-error').textContent = "Sex must be 0 (Female) or 1 (Male).";
+            sex.style.borderColor = 'red';
+            isValid = false;
+        } else {
+            sex.style.borderColor = '';
+        }
+
+        // Validate Chest Pain
+        const chestPain = document.getElementById('chest_pain');
+        if (chestPain.value < 1 || chestPain.value > 4) {
+            document.getElementById('chest_pain-error').textContent = "Chest pain type must be between 1 and 4.";
+            chestPain.style.borderColor = 'red';
+            isValid = false;
+        } else {
+            chestPain.style.borderColor = '';
+        }
+
+        // Validate Resting BP
+        const restingBP = document.getElementById('resting_bp');
+        if (restingBP.value < 90 || restingBP.value > 200) {
+            document.getElementById('resting_bp-error').textContent = "Resting BP must be between 90 and 200.";
+            restingBP.style.borderColor = 'red';
+            isValid = false;
+        } else {
+            restingBP.style.borderColor = '';
+        }
+
+        // Validate Cholesterol
+        const cholesterol = document.getElementById('cholesterol');
+        if (cholesterol.value < 100 || cholesterol.value > 500) {
+            document.getElementById('cholesterol-error').textContent = "Cholesterol must be between 100 and 500.";
+            cholesterol.style.borderColor = 'red';
+            isValid = false;
+        } else {
+            cholesterol.style.borderColor = '';
+        }
+
+       // Validate Fasting Blood Sugar
+const fastingBloodSugar = document.getElementById('fasting_blood_sugar');
+if (fastingBloodSugar.value !== "0" && fastingBloodSugar.value !== "1") {
+    document.getElementById('fasting_blood_sugar-error').textContent = "Fasting blood sugar must be either 0 (≤ 120) or 1 (> 120).";
+    fastingBloodSugar.style.borderColor = 'red';
+    isValid = false;
+} else {
+    fastingBloodSugar.style.borderColor = '';
+}
+
+
+        // Validate Resting ECG
+        const restingECG = document.getElementById('resting_ecg');
+        if (restingECG.value < 0 || restingECG.value > 2) {
+            document.getElementById('resting_ecg-error').textContent = "Resting ECG must be between 0 and 2.";
+            restingECG.style.borderColor = 'red';
+            isValid = false;
+        } else {
+            restingECG.style.borderColor = '';
+        }
+
+        // Validate Max Heart Rate
+        const maxHeartRate = document.getElementById('max_heart_rate');
+        if (maxHeartRate.value < 60 || maxHeartRate.value > 220) {
+            document.getElementById('max_heart_rate-error').textContent = "Max heart rate must be between 60 and 220.";
+            maxHeartRate.style.borderColor = 'red';
+            isValid = false;
+        } else {
+            maxHeartRate.style.borderColor = '';
+        }
+
+        // Validate Exercise Angina
+        const exerciseAngina = document.getElementById('exercise_angina');
+        if (exerciseAngina.value < 0 || exerciseAngina.value > 1) {
+            document.getElementById('exercise_angina-error').textContent = "Exercise angina must be 0 or 1.";
+            exerciseAngina.style.borderColor = 'red';
+            isValid = false;
+        } else {
+            exerciseAngina.style.borderColor = '';
+        }
+
+        // Validate Oldpeak
+        const oldpeak = document.getElementById('oldpeak');
+        if (oldpeak.value < -2.0 || oldpeak.value > 6.0) {
+            document.getElementById('oldpeak-error').textContent = "Oldpeak must be between -2.0 and 6.0.";
+            oldpeak.style.borderColor = 'red';
+            isValid = false;
+        } else {
+            oldpeak.style.borderColor = '';
+        }
+
+        // Validate ST Slope
+        const stSlope = document.getElementById('st_slope');
+        if (stSlope.value < 1 || stSlope.value > 3) {
+            document.getElementById('st_slope-error').textContent = "ST slope must be between 1 and 3.";
+            stSlope.style.borderColor = 'red';
+            isValid = false;
+        } else {
+            stSlope.style.borderColor = '';
+        }
+
+        return isValid;
+    }
+</script>
+
+</body>
+</html>
