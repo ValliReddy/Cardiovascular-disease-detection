@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/assets/css/main.css" />
+    <title>Cardiovascular Risk Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .container {
+            display: flex;
+            flex-direction: column; /* Changed to column layout */
+            align-items: center;
+            width: 100%;
+            justify-content: center;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            background-color: #4acaa8;
+            max-width: 600px;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 15px;
+            position: relative;
+            left: -70px; /* Moved form to the left */
+            top: 20px;
+        }
+        label, input {
+            width: 48%;
+        }
+        .inline-group {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+        .inline-group label, .inline-group input {
+            width: 48%;
+        }
+        label {
+            font-weight: bold;
+            color: white;
+            text-align: left;
+        }
+        input[type="number"], input[type="submit"], input[type="file"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+         input[type="submit"] {
+            width: 100%;
+              background-color: #3aa58b;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+        }
+        input[type="submit"]:hover {
+              background-color: #3aa58b;
+            color: white;
+        }
+        h2 {
+            margin-top: 20px;
+            color: #4acaa8; /* Text color only */
+            text-align: center; /* Center the text */
+            width: max-content;
+            background-color: transparent; /* Removed background color */
+            font-size: 18px; /* Adjusted font size */
+            position: relative;
+            left: -20px; /* Move it slightly to the left */
+        }
+        h3 {
+            color: #4acaa8;
+            text-align: center;
+        }
+
+    .image-container {
+        text-align: center;         /* Align image to the left */
+        margin-top: 20px;
+        width: 100%;              /* Ensure the container uses full width */
+    }
+
+    .full-screen-image {
+        max-width: 70%;           /* Make image take up 50% of the container width */
+        max-height: 60vh;         /* Limit height to 50% of the viewport height */
+        object-fit: contain;      /* Ensure the image maintains its aspect ratio */
+    }
+</style>
+
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <section id="header">
+            <header>
+                <span class="image avatar"><img src="static/images/heart.png" alt="" /></span>
+                <h1 id="logo"><a href="#">CardioPredict</a></h1>
+                <p>AI-driven care for a healthier heart<br />
+                Predicting tomorrow's health, today.</p>
+            </header>
+            <nav id="nav">
+                <ul>
+                    <li><a href="/" class="active">ECG</a></li>
+                    <li><a href="/">Features</a></li>
+                </ul>
+            </nav>
+            <footer>
+                <ul class="icons">
+                    <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+                    <li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+                    <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+                    <li><a href="#" class="icon brands fa-github"><span class="label">Github</span></a></li>
+                    <li><a href="#" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+                </ul>
+            </footer>
+        </section>
+
+
+
+
+        <h2>Upload ECG Image for Prediction</h2>
+
+        <form action="/ecg" method="post" enctype="multipart/form-data">
+        <input type="file" name="ecg_image" accept="image/*" required>
+        <br><br>
+        <input type="submit" value="Predict">
+    </form>
+
+    {% if uploaded_image %}
+    <h3>Uploaded Image:</h3>
+    <div class="image-container">
+        <img src="{{ uploaded_image }}" alt="ECG Image" class="full-screen-image">
+    </div>
+{% endif %}
+
+
+    {% if result %}
+    <h3>Prediction Result:</h3>
+    {% if result == 'normal' %}
+        <p style="font-size: 1.2em; color: green;">
+            The ECG result indicates a <strong>Normal</strong> heart condition. <br>
+            No significant abnormalities detected.
+        </p>
+    {% elif result == 'abnormal' %}
+        <p style="font-size: 1.2em; color: orange;">
+            The ECG result indicates an <strong>Abnormal</strong> heart condition. <br>
+            Further investigation recommended.
+        </p>
+    {% elif result == 'myocardial' %}
+        <p style="font-size: 1.2em; color: red;">
+            The ECG result indicates a <strong>Myocardial Infarction</strong> (Heart Attack) risk. <br>
+            Immediate medical attention required!
+        </p>
+    {% else %}
+        <p style="font-size: 1.2em; color: gray;">
+            Unable to determine the result. <br>
+            Please try again.
+        </p>
+    {% endif %}
+{% endif %}
+
+
+    </div>
+</body>
+</html>
